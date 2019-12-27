@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="com.edzz.impl" increment="1577407168909">
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="com.edzz.impl.provider"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" value="0.0.0.201912270039" type="Version"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="bundle-version" value="0.0.0.201912270039" type="Version"/>
+      <attribute name="osgi.wiring.bundle" value="com.edzz.impl.provider"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="bundle-version" value="0.0.0.201912270039" type="Version"/>
+      <attribute name="osgi.wiring.host" value="com.edzz.impl.provider"/>
+    </capability>
+    <capability namespace="osgi.service">
+      <directive name="uses" value="com.edzzn.api"/>
+      <attribute name="objectClass" value="com.edzzn.api.Greeting" type="List&lt;String&gt;"/>
+    </capability>
+    <capability namespace="osgi.service">
+      <directive name="uses" value="com.edzzn.command"/>
+      <attribute name="objectClass" value="com.edzzn.command.GreetingCommand" type="List&lt;String&gt;"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="5423" type="Long"/>
+      <attribute name="url" value="generated/com.edzz.impl.provider.jar"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+      <attribute name="osgi.content" value="656EA545A90CE55C762648E50C134DC2F1180E22C3D40D3A938BDBE3FC3528F1"/>
+    </capability>
+    <capability namespace="bndtools.workspace">
+      <attribute name="bndtools.workspace" value="file:/C:/Users/edrei/eclipse-workspace-osgi-2"/>
+      <attribute name="project.path" value="/com.edzz.impl"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.edzzn.api)(&amp;(version&gt;=1.0.0)(!(version&gt;=2.0.0))))"/>
+    </requirement>
+    <requirement namespace="osgi.service">
+      <directive name="filter" value="(objectClass=com.edzzn.api.Greeting)"/>
+      <directive name="effective" value="active"/>
+    </requirement>
+    <requirement namespace="osgi.extender">
+      <directive name="filter" value="(&amp;(osgi.extender=osgi.component)(version&gt;=1.4.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="com.edzz.impl.command"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" value="0.0.0" type="Version"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="bundle-version" value="0.0.0" type="Version"/>
+      <attribute name="osgi.wiring.bundle" value="com.edzz.impl.command"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="bundle-version" value="0.0.0" type="Version"/>
+      <attribute name="osgi.wiring.host" value="com.edzz.impl.command"/>
+    </capability>
+    <capability namespace="osgi.service">
+      <directive name="uses" value="com.edzzn.api"/>
+      <attribute name="objectClass" value="com.edzzn.api.Greeting" type="List&lt;String&gt;"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="3141" type="Long"/>
+      <attribute name="url" value="generated/com.edzz.impl.command.jar"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+      <attribute name="osgi.content" value="CB1EB2008413B5F2E347FED2844F42A6BA9AD89975A901C196A3ABB1F45E3BA0"/>
+    </capability>
+    <capability namespace="bndtools.workspace">
+      <attribute name="bndtools.workspace" value="file:/C:/Users/edrei/eclipse-workspace-osgi-2"/>
+      <attribute name="project.path" value="/com.edzz.impl"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.edzzn.api)(&amp;(version&gt;=1.0.0)(!(version&gt;=2.0.0))))"/>
+    </requirement>
+    <requirement namespace="osgi.extender">
+      <directive name="filter" value="(&amp;(osgi.extender=osgi.component)(version&gt;=1.4.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+</repository>

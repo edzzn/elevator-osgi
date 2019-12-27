@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="com.edzzn.api" increment="1577407105844">
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="com.edzzn.api"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" value="0.0.0" type="Version"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="bundle-version" value="0.0.0" type="Version"/>
+      <attribute name="osgi.wiring.bundle" value="com.edzzn.api"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="bundle-version" value="0.0.0" type="Version"/>
+      <attribute name="osgi.wiring.host" value="com.edzzn.api"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="version" value="1.0.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="com.edzzn.api"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="2376" type="Long"/>
+      <attribute name="url" value="generated/com.edzzn.api.jar"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+      <attribute name="osgi.content" value="0A0221403B131667C96A12775AAE0273BF8549F69322228A8E1766A4B19DF40C"/>
+    </capability>
+    <capability namespace="bndtools.workspace">
+      <attribute name="bndtools.workspace" value="file:/C:/Users/edrei/eclipse-workspace-osgi-2"/>
+      <attribute name="project.path" value="/com.edzzn.api"/>
+    </capability>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+</repository>
