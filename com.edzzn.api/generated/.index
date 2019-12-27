@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="com.edzzn.api" increment="1577478017653">
+<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="com.edzzn.api" increment="1577480461024">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="com.edzzn.api"/>
@@ -19,10 +19,10 @@
       <attribute name="osgi.wiring.package" value="com.edzzn.api"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="2452" type="Long"/>
+      <attribute name="size" value="2512" type="Long"/>
       <attribute name="url" value="generated/com.edzzn.api.jar"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
-      <attribute name="osgi.content" value="5C8E84797D631CFBF9019B013D1BA3EA12A65F0331B0E99C7F9CF3C3357F2C6E"/>
+      <attribute name="osgi.content" value="2F051246695946FF0FE97275261CC56F8D62D8DB3A4946D3069455D4DB2AFEE3"/>
     </capability>
     <capability namespace="bndtools.workspace">
       <attribute name="bndtools.workspace" value="file:/C:/Users/edrei/eclipse-workspace-osgi-2"/>

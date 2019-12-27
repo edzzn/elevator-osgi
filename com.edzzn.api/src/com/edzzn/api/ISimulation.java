@@ -1,5 +1,6 @@
 package com.edzzn.api;
 
 public interface ISimulation {
-	String getStatus();
+	public String getStatus();
+	public void requestRide(int origin, int destination);
 }

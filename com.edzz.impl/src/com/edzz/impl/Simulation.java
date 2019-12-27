@@ -5,21 +5,28 @@ import com.edzzn.api.ISimulation;;
 
 @Component
 public class Simulation implements ISimulation {
-	private ElevatorController runnable = new ElevatorController();
+	private ElevatorController elevatorController = new ElevatorController();
 	
 	public  Simulation() {
-		runnable.start();
+		elevatorController.start();
 	}
 
 	private String formatStatus(int time) {
 		String output = "Status: Elapsed time: " + time;
+		output += "\nQueue: " + elevatorController.getPrettyQ();
 		return output;
 	}
 	
 	@Override
 	public String getStatus() {
-		int time = runnable.getNum();
+		int time = elevatorController.getNum();
 		return formatStatus(time);
+	}
+
+	@Override
+	public void requestRide(int origin, int destination) {
+		FloorRequest request = new FloorRequest(origin, destination);
+		elevatorController.addRequest(request);
 	}
 
 }

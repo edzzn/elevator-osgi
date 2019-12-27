@@ -1,17 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="com.edzz.impl" increment="1577479160146">
+<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="com.edzz.impl" increment="1577481020117">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="com.edzz.impl.provider"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" value="0.0.0.201912272039" type="Version"/>
+      <attribute name="version" value="0.0.0.201912272110" type="Version"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
-      <attribute name="bundle-version" value="0.0.0.201912272039" type="Version"/>
+      <attribute name="bundle-version" value="0.0.0.201912272110" type="Version"/>
       <attribute name="osgi.wiring.bundle" value="com.edzz.impl.provider"/>
     </capability>
     <capability namespace="osgi.wiring.host">
-      <attribute name="bundle-version" value="0.0.0.201912272039" type="Version"/>
+      <attribute name="bundle-version" value="0.0.0.201912272110" type="Version"/>
       <attribute name="osgi.wiring.host" value="com.edzz.impl.provider"/>
     </capability>
     <capability namespace="osgi.service">
@@ -23,10 +23,10 @@
       <attribute name="objectClass" value="com.edzzn.command.SimulationCommand" type="List&lt;String&gt;"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="7130" type="Long"/>
+      <attribute name="size" value="12233" type="Long"/>
       <attribute name="url" value="generated/com.edzz.impl.provider.jar"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
-      <attribute name="osgi.content" value="EF7701ED27BA006238CEB58D49B026BBD36693DADF12B1501DD5E6092823170A"/>
+      <attribute name="osgi.content" value="84BC2D7708F08943DA0A00EFE3B0EA3E1DBEB1FD51D5985196D94BA1CA2F3F74"/>
     </capability>
     <capability namespace="bndtools.workspace">
       <attribute name="bndtools.workspace" value="file:/C:/Users/edrei/eclipse-workspace-osgi-2"/>
@@ -65,10 +65,10 @@
       <attribute name="objectClass" value="com.edzzn.api.ISimulation" type="List&lt;String&gt;"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="4747" type="Long"/>
+      <attribute name="size" value="9776" type="Long"/>
       <attribute name="url" value="generated/com.edzz.impl.command.jar"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
-      <attribute name="osgi.content" value="CB53706CD58A8CC7C9CC36FACE0CB5E514F2B50D14A1C2B3DFB023BB0B5A625C"/>
+      <attribute name="osgi.content" value="E717850B449EF7D942A5BE3DF1AE6BA294D200238027BEA207990077E3F2A6FB"/>
     </capability>
     <capability namespace="bndtools.workspace">
       <attribute name="bndtools.workspace" value="file:/C:/Users/edrei/eclipse-workspace-osgi-2"/>
