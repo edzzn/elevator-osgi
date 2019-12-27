@@ -5,7 +5,7 @@ import com.edzzn.api.ISimulation;;
 
 @Component
 public class Simulation implements ISimulation {
-	private RunnableExample runnable = new RunnableExample();
+	private ElevatorController runnable = new ElevatorController();
 	
 	public  Simulation() {
 		runnable.start();
