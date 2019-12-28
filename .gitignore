@@ -6,3 +6,5 @@ generated/
 bin
 com.edzz.impl/bin/
 com.edzz.impl/generated/
+com.edzz.api/bin/
+com.edzz.api/generated/
