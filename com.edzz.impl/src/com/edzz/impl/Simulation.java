@@ -13,6 +13,7 @@ public class Simulation implements ISimulation {
 
 	private String formatStatus(int time) {
 		String output = "Status: Elapsed time: " + time;
+		output += "\nElevator: " + elevatorController.getElevatorStatus();
 		output += "\nQueue: " + elevatorController.getPrettyQ();
 		return output;
 	}
@@ -27,6 +28,11 @@ public class Simulation implements ISimulation {
 	public void requestRide(int origin, int destination) {
 		FloorRequest request = new FloorRequest(origin, destination);
 		elevatorController.addRequest(request);
+	}
+
+	@Override
+	public String debug() {
+		return elevatorController.getPrettyDebug();
 	}
 
 }

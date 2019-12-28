@@ -10,4 +10,6 @@ public interface IElevator {
 	public void setCurrentFloor(int floor);
 	public ElevatorState getCurrentState();
 	public void setCurrentState(ElevatorState state);
+	
+	public String getStatus();
 }

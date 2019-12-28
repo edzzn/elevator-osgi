@@ -8,7 +8,8 @@ import org.osgi.service.component.annotations.Reference;
 @Component(property = {
         CommandProcessor.COMMAND_SCOPE + "=elevator",
         CommandProcessor.COMMAND_FUNCTION + "=s",
-        CommandProcessor.COMMAND_FUNCTION + "=r"
+        CommandProcessor.COMMAND_FUNCTION + "=r",
+        CommandProcessor.COMMAND_FUNCTION + "=d",
     },
 
     service=SimulationCommand.class
@@ -22,10 +23,18 @@ public class SimulationCommand {
     }
 
     public void s() {
+    	// Get Status
         System.out.println(simulationSvc.getStatus());
     }
+    
     public void r(int origin, int destination) {
+    	// Register a new request
     	simulationSvc.requestRide(origin, destination);
         System.out.println(simulationSvc.getStatus());
+    }
+    
+    public void d() {
+    	// return debug output
+        System.out.println(simulationSvc.debug());
     }
 }

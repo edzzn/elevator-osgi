@@ -1,15 +1,19 @@
 package com.edzz.impl;
 
 public class Elevator implements IElevator {
+	private final String name;
 	private final int maxFloor;
 	private final int minFloor = 0;
 	private ElevatorState direction = ElevatorState.MOVING_UP;
+	private final int defaultFloor;
 
 	private int currentFloor;
 	private ElevatorState currentState = ElevatorState.STOPPED;
 
-	public Elevator(int currentFloor, int maxFloor) {
-		this.currentFloor = currentFloor;
+	public Elevator(String name, int defaultFloor, int maxFloor) {
+		this.name = name;
+		this.defaultFloor = defaultFloor;
+		this.currentFloor = defaultFloor;
 		this.maxFloor = maxFloor;
 	}
 
@@ -51,5 +55,14 @@ public class Elevator implements IElevator {
 	@Override
 	public void setCurrentFloor(int floor) {
 		this.currentFloor = floor;
+	}
+
+	@Override
+	public String getStatus() {
+		String output = "";
+		output += "Name: " + name;
+		output += "\tState: " + currentState;
+		output += "\tDirrection: " + direction;
+		return output;
 	}
 }
