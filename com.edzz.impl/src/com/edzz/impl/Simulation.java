@@ -20,13 +20,14 @@ public class Simulation implements ISimulation {
 	
 	@Override
 	public String getStatus() {
-		int time = elevatorController.getNum();
+		int time = elevatorController.getTime();
 		return formatStatus(time);
 	}
 
 	@Override
 	public void requestRide(int origin, int destination) {
-		FloorRequest request = new FloorRequest(origin, destination);
+		int time = elevatorController.getTime();
+		FloorRequest request = new FloorRequest(time, origin, destination);
 		elevatorController.addRequest(request);
 	}
 

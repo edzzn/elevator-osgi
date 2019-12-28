@@ -7,9 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ElevatorController implements Runnable {
-	private int num = 0;
+	private int time = 0;
 	private volatile Thread runnableThread = null;
-	private Queue<FloorRequest> requestQueue = new LinkedList<FloorRequest>();
+	private LinkedList<FloorRequest> requestQueue = new LinkedList<FloorRequest>();
 	private Elevator elevator = new Elevator("E1", 0, 8);
 	private List<String> debug = new ArrayList<>();
 
@@ -20,16 +20,30 @@ public class ElevatorController implements Runnable {
 		}
 	}
 
-	public int getNum() {
-		return num;
+	public int getTime() {
+		return time;
 	}
 
 	public void incrementNum() {
-		this.num = num += 1;
+		this.time = time += 1;
 	}
 
 	public void addRequest(FloorRequest request) {
-		requestQueue.add(request);
+		FloorRequest tailRequest = this.requestQueue.peekLast();
+		if (tailRequest != null) {
+			int timeSinceLastRequest = Math.abs(tailRequest.requestTime - time);
+			Boolean isSimilarRequest = request.originFloor == tailRequest.originFloor
+					&& request.destinationFloor == tailRequest.destinationFloor;
+
+			if (timeSinceLastRequest < 3 && isSimilarRequest) {
+				// Activate the buzzer, Don't add duplicated request 
+				debug.add("Duplicated Request");
+			} else {
+				requestQueue.add(request);
+			}
+		} else {
+			requestQueue.add(request);
+		}
 	}
 
 	public String getElevatorStatus() {
@@ -49,7 +63,7 @@ public class ElevatorController implements Runnable {
 		prettyOutPut += " ]";
 		return prettyOutPut;
 	}
-	
+
 	public String getPrettyDebug() {
 		Iterator<String> value = debug.iterator();
 
@@ -63,12 +77,16 @@ public class ElevatorController implements Runnable {
 		prettyOutput += " ]";
 		return prettyOutput;
 	}
-	
+
 	public void updateElevatorState() {
 		// Is there an available Elevator
 		Boolean isElevatorAvailable = elevator.getCurrentState() == ElevatorState.STOPPED;
-		if (!requestQueue.isEmpty() && isElevatorAvailable) {
-			String debugOutput = "ROUTE elevator" + this.getNum() + " " + this.getPrettyQ() + " " + this.getElevatorStatus();
+		FloorRequest request = this.requestQueue.peek();
+		this.requestQueue.peek();
+		if (request != null && isElevatorAvailable) {
+			request = this.requestQueue.poll();
+			elevator.setCurrentState(ElevatorState.FLOORING);
+			String debugOutput = "ROUTE " + elevator.getName() + " " + request + " {" + this.getElevatorStatus() + "}";
 			debug.add(debugOutput);
 		}
 	}
@@ -77,9 +95,10 @@ public class ElevatorController implements Runnable {
 	public void run() {
 		Thread myThread = Thread.currentThread();
 		while (runnableThread == myThread) {
-			this.incrementNum();
 			// Check the elevator State before Moving
 			this.updateElevatorState();
+
+			this.incrementNum();
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {

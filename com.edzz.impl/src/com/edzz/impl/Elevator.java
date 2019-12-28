@@ -61,8 +61,13 @@ public class Elevator implements IElevator {
 	public String getStatus() {
 		String output = "";
 		output += "Name: " + name;
-		output += "\tState: " + currentState;
-		output += "\tDirrection: " + direction;
+		output += ",State: " + currentState;
+		output += ",Dirrection: " + direction;
 		return output;
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 }
