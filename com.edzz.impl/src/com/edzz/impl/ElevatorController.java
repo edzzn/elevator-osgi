@@ -208,16 +208,16 @@ public class ElevatorController implements Runnable {
 				nextState.requestState = FloorRequestState.PENDING;
 			} else {
 				// go to the default floor
-
-				String debugOutput = "";
-				debugOutput += "Going to Default Floor";
-				debugOutput += ", currentFloor: " + currentFloor;
-				debugOutput += ", defaultFloor: " + elevator.getDefaultFloor();
-				debug.add(debugOutput);
 				if (currentFloor == elevator.getDefaultFloor()) {
 					// Arrived
 					nextState.elevatorState = ElevatorState.STOPPED;
 				} else {
+
+					String debugOutput = "";
+					debugOutput += "Going to Default Floor";
+					debugOutput += ", currentFloor: " + currentFloor;
+					debugOutput += ", defaultFloor: " + elevator.getDefaultFloor();
+					debug.add(debugOutput);
 					// Keep moving
 					if (currentFloor > elevator.getDefaultFloor()) {
 						// Move DOWN
