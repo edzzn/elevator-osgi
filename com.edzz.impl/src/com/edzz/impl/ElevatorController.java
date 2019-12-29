@@ -1,6 +1,5 @@
 package com.edzz.impl;
 
-import java.util.Queue;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -15,7 +14,8 @@ public class ElevatorController implements Runnable {
 
 	public void start() {
 		if (runnableThread == null) {
-			runnableThread = new Thread(this, "Clock");
+//			runnableThread = new Thread(this, "Clock");
+			runnableThread = new Thread(this);
 			runnableThread.start();
 		}
 	}
@@ -31,18 +31,22 @@ public class ElevatorController implements Runnable {
 	public void addRequest(FloorRequest request) {
 		FloorRequest tailRequest = this.requestQueue.peekLast();
 		if (tailRequest != null) {
-			int timeSinceLastRequest = Math.abs(tailRequest.requestTime - time);
-			Boolean isSimilarRequest = request.originFloor == tailRequest.originFloor
-					&& request.destinationFloor == tailRequest.destinationFloor;
+			int timeSinceLastRequest = Math.abs(tailRequest.getRequestTime() - time);
+			Boolean isSimilarRequest = request.getOriginFloor() == tailRequest.getOriginFloor()
+					&& request.getDestinationFloor() == tailRequest.getDestinationFloor();
 
-			if (timeSinceLastRequest < 3 && isSimilarRequest) {
-				// Activate the buzzer, Don't add duplicated request 
+			if (timeSinceLastRequest < 20 && isSimilarRequest) {
+				// Activate the buzzer, Don't add duplicated request
 				debug.add("Duplicated Request");
 			} else {
-				requestQueue.add(request);
+				if (request.getDestinationFloor() < elevator.getMaxFloor()) {
+					requestQueue.add(request);
+				}
 			}
 		} else {
-			requestQueue.add(request);
+			if (request.getDestinationFloor() < elevator.getMaxFloor()) {
+				requestQueue.add(request);
+			}
 		}
 	}
 
@@ -58,7 +62,7 @@ public class ElevatorController implements Runnable {
 		while (value.hasNext()) {
 			FloorRequest currentRequest = value.next();
 			prettyOutPut += " ";
-			prettyOutPut += "(" + currentRequest.originFloor + "->" + currentRequest.destinationFloor + ")";
+			prettyOutPut += "(" + currentRequest.getOriginFloor() + "->" + currentRequest.getDestinationFloor() + ")";
 		}
 		prettyOutPut += " ]";
 		return prettyOutPut;
@@ -80,15 +84,129 @@ public class ElevatorController implements Runnable {
 
 	public void updateElevatorState() {
 		// Is there an available Elevator
-		Boolean isElevatorAvailable = elevator.getCurrentState() == ElevatorState.STOPPED;
-		FloorRequest request = this.requestQueue.peek();
-		this.requestQueue.peek();
-		if (request != null && isElevatorAvailable) {
-			request = this.requestQueue.poll();
-			elevator.setCurrentState(ElevatorState.FLOORING);
-			String debugOutput = "ROUTE " + elevator.getName() + " " + request + " {" + this.getElevatorStatus() + "}";
-			debug.add(debugOutput);
+		NextState nextState = this.calculateNextState();
+		final ElevatorState state = this.elevator.getCurrentState();
+		ElevatorState nextElevatorState = nextState.elevatorState;
+		FloorRequestState nextRequestState = nextState.requestState;
+
+		
+		this.elevator.setCurrentState(nextElevatorState);
+		if (this.elevator.getRequest() !=  null) {
+
+			debug.add(state + " - " + nextState);
+			this.elevator.setRequestState(nextRequestState);	
 		}
+		
+		switch (nextElevatorState) {
+		case MOVING_DOWN:
+			elevator.setCurrentFloor(elevator.getCurrentFloor() - 1);
+			break;
+		case MOVING_UP:
+			elevator.setCurrentFloor(elevator.getCurrentFloor() + 1);
+			break;
+		case STOPPED:
+			break;
+		}
+	}
+
+	private static class NextState {
+		ElevatorState elevatorState;
+		FloorRequestState requestState;
+
+		public NextState() {
+			this.elevatorState = ElevatorState.STOPPED;
+			this.requestState = FloorRequestState.DROPPED;
+		}
+
+		@Override
+		public String toString() {
+			String output = "";
+			output += "ElevatorState: '" + elevatorState + "'";
+			output += ", FloorRequestState: '" + requestState + "'";
+			return output;
+		}
+
+	}
+
+	private NextState calculateNextState() {
+		int currentFloor = this.elevator.getCurrentFloor();
+		FloorRequest currentRequest = this.elevator.getRequest();
+		
+		NextState nextState = new NextState();
+		if (currentRequest != null) {
+			FloorRequestState currentRequestState = this.elevator.getRequestState();
+			// If elevator has a request
+			switch (currentRequestState) {
+
+			case PENDING:
+				// Here the request is managed and the direction is set to pickup user
+				nextState.requestState = FloorRequestState.PICKING_UP;
+				nextState.elevatorState = ElevatorState.STOPPED;
+				break;
+			case DROPPED:
+				this.elevator.setRequest(null);
+				nextState.elevatorState = ElevatorState.STOPPED;
+				nextState.requestState = FloorRequestState.DROPPED;
+				break;
+			case DROPING:
+
+				String debugOutputDroping = "";
+				debugOutputDroping += "Droping";
+				debugOutputDroping += ", currentFloor: " + currentFloor;
+				debugOutputDroping += ", detinationFloor: " + currentRequest.getDestinationFloor();
+				debug.add(debugOutputDroping);
+				if (currentFloor == currentRequest.getDestinationFloor()) {
+					// Arrived
+					nextState.requestState = FloorRequestState.DROPPED;
+				} else {
+					// Keep moving
+					if (currentFloor > currentRequest.getDestinationFloor()) {
+						// Move DOWN
+						nextState.elevatorState = ElevatorState.MOVING_DOWN;
+						nextState.requestState = FloorRequestState.DROPING;
+					} else {
+						// Current floor is lower than destination, move UP
+						nextState.elevatorState = ElevatorState.MOVING_UP;
+						nextState.requestState = FloorRequestState.DROPING;
+					}
+				}
+				break;
+			case PICKING_UP:
+				String debugOutput = "";
+				debugOutput += "Picking Up";
+				debugOutput += ", currentFloor: " + currentFloor;
+				debugOutput += ", originFloor: " + currentRequest.getOriginFloor();
+				debug.add(debugOutput);
+				if (currentFloor == currentRequest.getOriginFloor()) {
+					// Arrived
+					nextState.requestState = FloorRequestState.DROPING;
+				} else {
+					// Keep moving
+					if (currentFloor > currentRequest.getOriginFloor()) {
+						// Move DOWN
+						nextState.elevatorState = ElevatorState.MOVING_DOWN;
+						nextState.requestState = FloorRequestState.PICKING_UP;
+					} else {
+						// Current floor is lower than destination, move UP
+						nextState.elevatorState = ElevatorState.MOVING_UP;
+						nextState.requestState = FloorRequestState.PICKING_UP;
+					}
+				}
+				break;
+			}
+
+		} else {
+			// If there is no current request
+			FloorRequest request = this.requestQueue.peek();
+			if (request != null) {
+				// But there is a Queued request
+				request = this.requestQueue.poll();
+				this.elevator.setRequest(request);
+				nextState.elevatorState = ElevatorState.STOPPED;
+				nextState.requestState = FloorRequestState.PENDING;
+			}
+		}
+		return nextState;
 	}
 
 	@Override

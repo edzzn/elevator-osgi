@@ -6,6 +6,7 @@ public class Elevator implements IElevator {
 	private final int minFloor = 0;
 	private ElevatorState direction = ElevatorState.MOVING_UP;
 	private final int defaultFloor;
+	private FloorRequest request;
 
 	private int currentFloor;
 	private ElevatorState currentState = ElevatorState.STOPPED;
@@ -61,13 +62,35 @@ public class Elevator implements IElevator {
 	public String getStatus() {
 		String output = "";
 		output += "Name: " + name;
-		output += ",State: " + currentState;
-		output += ",Dirrection: " + direction;
+		output += ", Floor: " + currentFloor;
+		output += ", State: " + currentState;
+		if (request != null) {
+			output += ", Request: " + request.toString();			
+		} else {
+			output += ", Request: None";
+		}
+
 		return output;
 	}
 
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	public FloorRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(FloorRequest request) {
+		this.request = request;
+	}
+	
+	public void setRequestState(FloorRequestState state) {
+		this.request.setState(state);
+	}
+	
+	public FloorRequestState getRequestState() {
+		return request.getState();
 	}
 }
