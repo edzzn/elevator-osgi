@@ -93,7 +93,7 @@ public class ElevatorController implements Runnable {
 		this.elevator.setCurrentState(nextElevatorState);
 		if (this.elevator.getRequest() !=  null) {
 
-			debug.add(state + " - " + nextState);
+			debug.add(elevator.getStatus() + ", " + state + " - " + nextState);
 			this.elevator.setRequestState(nextRequestState);	
 		}
 		
@@ -152,7 +152,8 @@ public class ElevatorController implements Runnable {
 			case DROPING:
 
 				String debugOutputDroping = "";
-				debugOutputDroping += "Droping";
+				debugOutputDroping += elevator.getStatus();
+				debugOutputDroping += ", Droping";
 				debugOutputDroping += ", currentFloor: " + currentFloor;
 				debugOutputDroping += ", detinationFloor: " + currentRequest.getDestinationFloor();
 				debug.add(debugOutputDroping);
@@ -174,7 +175,8 @@ public class ElevatorController implements Runnable {
 				break;
 			case PICKING_UP:
 				String debugOutput = "";
-				debugOutput += "Picking Up";
+				debugOutput += elevator.getStatus();
+				debugOutput += ", Picking Up";
 				debugOutput += ", currentFloor: " + currentFloor;
 				debugOutput += ", originFloor: " + currentRequest.getOriginFloor();
 				debug.add(debugOutput);
@@ -214,7 +216,8 @@ public class ElevatorController implements Runnable {
 				} else {
 
 					String debugOutput = "";
-					debugOutput += "Going to Default Floor";
+					debugOutput += elevator.getStatus();
+					debugOutput += ", Going to Default Floor";
 					debugOutput += ", currentFloor: " + currentFloor;
 					debugOutput += ", defaultFloor: " + elevator.getDefaultFloor();
 					debug.add(debugOutput);

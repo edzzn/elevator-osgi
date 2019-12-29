@@ -60,8 +60,8 @@ public class Elevator implements IElevator {
 
 	@Override
 	public String getStatus() {
-		String output = "";
-		output += "Name: " + name;
+		String output = "[";
+		output += "Elevator: "  + name;
 		output += ", Floor: " + currentFloor;
 		output += ", State: " + currentState;
 		if (request != null) {
@@ -69,6 +69,7 @@ public class Elevator implements IElevator {
 		} else {
 			output += ", Request: None";
 		}
+		output += "]";
 
 		return output;
 	}
