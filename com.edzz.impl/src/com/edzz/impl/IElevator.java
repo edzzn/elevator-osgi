@@ -3,6 +3,7 @@ package com.edzz.impl;
 public interface IElevator {
 	public int getMaxFloor();
 	public int getMinFloor();
+	public int getDefaultFloor();
 	public String getName();
 	public ElevatorState getDireaction();
 	

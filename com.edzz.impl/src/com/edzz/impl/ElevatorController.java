@@ -99,9 +99,11 @@ public class ElevatorController implements Runnable {
 		
 		switch (nextElevatorState) {
 		case MOVING_DOWN:
+		case MOVING_DOWN_DEFAULT:
 			elevator.setCurrentFloor(elevator.getCurrentFloor() - 1);
 			break;
 		case MOVING_UP:
+		case MOVING_UP_DEFAULT:
 			elevator.setCurrentFloor(elevator.getCurrentFloor() + 1);
 			break;
 		case STOPPED:
@@ -137,7 +139,6 @@ public class ElevatorController implements Runnable {
 			FloorRequestState currentRequestState = this.elevator.getRequestState();
 			// If elevator has a request
 			switch (currentRequestState) {
-
 			case PENDING:
 				// Here the request is managed and the direction is set to pickup user
 				nextState.requestState = FloorRequestState.PICKING_UP;
@@ -197,6 +198,7 @@ public class ElevatorController implements Runnable {
 
 		} else {
 			// If there is no current request
+			// Go to default Floor or attend another request
 			FloorRequest request = this.requestQueue.peek();
 			if (request != null) {
 				// But there is a Queued request
@@ -204,6 +206,27 @@ public class ElevatorController implements Runnable {
 				this.elevator.setRequest(request);
 				nextState.elevatorState = ElevatorState.STOPPED;
 				nextState.requestState = FloorRequestState.PENDING;
+			} else {
+				// go to the default floor
+
+				String debugOutput = "";
+				debugOutput += "Going to Default Floor";
+				debugOutput += ", currentFloor: " + currentFloor;
+				debugOutput += ", defaultFloor: " + elevator.getDefaultFloor();
+				debug.add(debugOutput);
+				if (currentFloor == elevator.getDefaultFloor()) {
+					// Arrived
+					nextState.elevatorState = ElevatorState.STOPPED;
+				} else {
+					// Keep moving
+					if (currentFloor > elevator.getDefaultFloor()) {
+						// Move DOWN
+						nextState.elevatorState = ElevatorState.MOVING_DOWN_DEFAULT;
+					} else {
+						// Current floor is lower than destination, move UP
+						nextState.elevatorState = ElevatorState.MOVING_UP_DEFAULT;
+					}
+				}
 			}
 		}
 		return nextState;

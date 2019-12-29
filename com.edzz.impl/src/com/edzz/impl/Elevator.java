@@ -85,12 +85,17 @@ public class Elevator implements IElevator {
 	public void setRequest(FloorRequest request) {
 		this.request = request;
 	}
-	
+
 	public void setRequestState(FloorRequestState state) {
 		this.request.setState(state);
 	}
 	
 	public FloorRequestState getRequestState() {
 		return request.getState();
+	}
+
+	@Override
+	public int getDefaultFloor() {
+		return this.defaultFloor;
 	}
 }
