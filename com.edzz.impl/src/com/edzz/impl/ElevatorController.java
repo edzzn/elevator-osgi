@@ -9,8 +9,15 @@ public class ElevatorController implements Runnable {
 	private int time = 0;
 	private volatile Thread runnableThread = null;
 	private LinkedList<FloorRequest> requestQueue = new LinkedList<FloorRequest>();
-	private Elevator elevator = new Elevator("E1", 0, 8);
 	private List<String> debug = new ArrayList<>();
+	private List<Elevator> elevators = new ArrayList<>();
+
+	public ElevatorController() {
+		Elevator elevator1 = new Elevator("E1", 0, 8);
+		Elevator elevator2 = new Elevator("E2", 7, 8);
+		elevators.add(elevator1);
+		elevators.add(elevator2);
+	}
 
 	public void start() {
 		if (runnableThread == null) {
@@ -30,6 +37,14 @@ public class ElevatorController implements Runnable {
 
 	public void addRequest(FloorRequest request) {
 		FloorRequest tailRequest = this.requestQueue.peekLast();
+
+		int maxFloor = 0;
+		for (Elevator elevator : this.elevators) {
+			if (elevator.getMaxFloor() > maxFloor) {
+				maxFloor = elevator.getMaxFloor();
+			}
+		}
+
 		if (tailRequest != null) {
 			int timeSinceLastRequest = Math.abs(tailRequest.getRequestTime() - time);
 			Boolean isSimilarRequest = request.getOriginFloor() == tailRequest.getOriginFloor()
@@ -39,19 +54,23 @@ public class ElevatorController implements Runnable {
 				// Activate the buzzer, Don't add duplicated request
 				debug.add("Duplicated Request");
 			} else {
-				if (request.getDestinationFloor() < elevator.getMaxFloor()) {
+				if (request.getDestinationFloor() < maxFloor) {
 					requestQueue.add(request);
 				}
 			}
 		} else {
-			if (request.getDestinationFloor() < elevator.getMaxFloor()) {
+			if (request.getDestinationFloor() < maxFloor) {
 				requestQueue.add(request);
 			}
 		}
 	}
 
-	public String getElevatorStatus() {
-		return elevator.getStatus();
+	public String getElevatorsStatus() {
+		String status = "";
+		for (Elevator elevator : elevators) {
+			status += "" + elevator.getStatus() + "\n";
+		}
+		return status;
 	}
 
 	public String getPrettyQ() {
@@ -84,30 +103,38 @@ public class ElevatorController implements Runnable {
 
 	public void updateElevatorState() {
 		// Is there an available Elevator
-		NextState nextState = this.calculateNextState();
-		final ElevatorState state = this.elevator.getCurrentState();
-		ElevatorState nextElevatorState = nextState.elevatorState;
-		FloorRequestState nextRequestState = nextState.requestState;
 
-		
-		this.elevator.setCurrentState(nextElevatorState);
-		if (this.elevator.getRequest() !=  null) {
+		for (Elevator elevator : this.elevators) {
+			NextState nextState = this.calculateNextState(elevator);
+			
+			// Is a null object is received, then skip current
+			if (nextState ==  null) {
+				continue;
+			}
+			
+			final ElevatorState state = elevator.getCurrentState();
+			ElevatorState nextElevatorState = nextState.elevatorState;
+			FloorRequestState nextRequestState = nextState.requestState;
 
-			debug.add(state + " - " + nextState);
-			this.elevator.setRequestState(nextRequestState);	
-		}
-		
-		switch (nextElevatorState) {
-		case MOVING_DOWN:
-		case MOVING_DOWN_DEFAULT:
-			elevator.setCurrentFloor(elevator.getCurrentFloor() - 1);
-			break;
-		case MOVING_UP:
-		case MOVING_UP_DEFAULT:
-			elevator.setCurrentFloor(elevator.getCurrentFloor() + 1);
-			break;
-		case STOPPED:
-			break;
+			elevator.setCurrentState(nextElevatorState);
+			if (elevator.getRequest() != null) {
+
+				debug.add(elevator.getStatus() + ", " + state + " - " + nextState);
+				elevator.setRequestState(nextRequestState);
+			}
+
+			switch (nextElevatorState) {
+			case MOVING_DOWN:
+			case MOVING_DOWN_DEFAULT:
+				elevator.setCurrentFloor(elevator.getCurrentFloor() - 1);
+				break;
+			case MOVING_UP:
+			case MOVING_UP_DEFAULT:
+				elevator.setCurrentFloor(elevator.getCurrentFloor() + 1);
+				break;
+			case STOPPED:
+				break;
+			}
 		}
 	}
 
@@ -130,13 +157,13 @@ public class ElevatorController implements Runnable {
 
 	}
 
-	private NextState calculateNextState() {
-		int currentFloor = this.elevator.getCurrentFloor();
-		FloorRequest currentRequest = this.elevator.getRequest();
-		
+	private NextState calculateNextState(Elevator elevator) {
+		int currentFloor = elevator.getCurrentFloor();
+		FloorRequest currentRequest = elevator.getRequest();
+
 		NextState nextState = new NextState();
 		if (currentRequest != null) {
-			FloorRequestState currentRequestState = this.elevator.getRequestState();
+			FloorRequestState currentRequestState = elevator.getRequestState();
 			// If elevator has a request
 			switch (currentRequestState) {
 			case PENDING:
@@ -145,14 +172,15 @@ public class ElevatorController implements Runnable {
 				nextState.elevatorState = ElevatorState.STOPPED;
 				break;
 			case DROPPED:
-				this.elevator.setRequest(null);
+				elevator.setRequest(null);
 				nextState.elevatorState = ElevatorState.STOPPED;
 				nextState.requestState = FloorRequestState.DROPPED;
 				break;
 			case DROPING:
 
 				String debugOutputDroping = "";
-				debugOutputDroping += "Droping";
+				debugOutputDroping += elevator.getStatus();
+				debugOutputDroping += ", Droping";
 				debugOutputDroping += ", currentFloor: " + currentFloor;
 				debugOutputDroping += ", detinationFloor: " + currentRequest.getDestinationFloor();
 				debug.add(debugOutputDroping);
@@ -174,7 +202,8 @@ public class ElevatorController implements Runnable {
 				break;
 			case PICKING_UP:
 				String debugOutput = "";
-				debugOutput += "Picking Up";
+				debugOutput += elevator.getStatus();
+				debugOutput += ", Picking Up";
 				debugOutput += ", currentFloor: " + currentFloor;
 				debugOutput += ", originFloor: " + currentRequest.getOriginFloor();
 				debug.add(debugOutput);
@@ -202,10 +231,35 @@ public class ElevatorController implements Runnable {
 			FloorRequest request = this.requestQueue.peek();
 			if (request != null) {
 				// But there is a Queued request
-				request = this.requestQueue.poll();
-				this.elevator.setRequest(request);
-				nextState.elevatorState = ElevatorState.STOPPED;
-				nextState.requestState = FloorRequestState.PENDING;
+				
+				Boolean areBothAvailable = this.areBothAvailable();
+				
+				if (areBothAvailable) {
+					// if 2 elevators are free, decide which one to use
+					// Here we get the distance between the currentFloors and the ride origin
+					Elevator elevatorChosen = elevator;
+					
+					int minDistance = Integer.MAX_VALUE;
+					
+					for (Elevator e : this.elevators) {
+						int distanceFromCurrToOrigin = Math.abs(request.getOriginFloor() - e.getCurrentFloor());
+						if (distanceFromCurrToOrigin < minDistance) {
+							elevatorChosen = e;
+						}
+					}
+					request = this.requestQueue.poll();
+					request.setState(FloorRequestState.PENDING);
+					elevatorChosen.setRequest(request);
+					elevatorChosen.setCurrentState(ElevatorState.STOPPED);
+					// Return Null and don't alter current elevator state.
+					return null;
+				} else {
+					// if not use the other elevator 	
+					request = this.requestQueue.poll();
+					elevator.setRequest(request);
+					nextState.elevatorState = ElevatorState.STOPPED;
+					nextState.requestState = FloorRequestState.PENDING;
+				}
 			} else {
 				// go to the default floor
 				if (currentFloor == elevator.getDefaultFloor()) {
@@ -214,7 +268,8 @@ public class ElevatorController implements Runnable {
 				} else {
 
 					String debugOutput = "";
-					debugOutput += "Going to Default Floor";
+					debugOutput += elevator.getStatus();
+					debugOutput += ", Going to Default Floor";
 					debugOutput += ", currentFloor: " + currentFloor;
 					debugOutput += ", defaultFloor: " + elevator.getDefaultFloor();
 					debug.add(debugOutput);
@@ -230,6 +285,17 @@ public class ElevatorController implements Runnable {
 			}
 		}
 		return nextState;
+	}
+
+	private Boolean areBothAvailable() {
+		Boolean isAElevatorBusy = false;
+		for (Elevator elevator : this.elevators) {
+			FloorRequest request = elevator.getRequest();
+			if (request != null) {
+				isAElevatorBusy = true;
+			}
+		}
+		return !isAElevatorBusy;
 	}
 
 	@Override

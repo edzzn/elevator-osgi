@@ -13,7 +13,7 @@ public class Simulation implements ISimulation {
 
 	private String formatStatus(int time) {
 		String output = "Status: Elapsed time: " + time;
-		output += "\nElevator: " + elevatorController.getElevatorStatus();
+		output += "\nElevators: " + elevatorController.getElevatorsStatus();
 		output += "\nQueue: " + elevatorController.getPrettyQ();
 		return output;
 	}
